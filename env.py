@@ -55,6 +55,7 @@ class Game:
         self.generate_legal_moves(self.board, self.geust_to_play)
 
     def play_move(self, move):
+        self.move_log.append(move)
         if move.is_placement:
             self.board.board[move.end_row][move.end_col] = move.piece_moved
             move.piece_moved.position = (move.end_row, move.end_col)
@@ -66,12 +67,25 @@ class Game:
                 move.start_row
             ][move.start_col]
             if move.harmony:
-                self.board.board[move.accent_pos[1]][
-                    move.accent_pos[0]
+                self.board.board[move.accent_pos[0]][
+                    move.accent_pos[1]
                 ] = move.accent_tile
             move.piece_moved.position = (move.end_row, move.end_col)
             self.geust_to_play = not self.geust_to_play
             self.generate_legal_moves(self.board, self.geust_to_play)
+
+    def undo_move(self):
+        move = self.move_log.pop()
+        self.geust_to_play = not self.geust_to_play
+
+        if move.is_placement:
+            move.piece_moved.position = (None, None)
+            self.board.board[move.end_row][move.end_col] = self.board.copy_of_board[
+                move.end_row
+            ][move.end_col]
+            self.generate_legal_moves(self.board, self.geust_to_play)
+        else:
+            pass
 
     def generate_legal_moves(self, board, guest_to_play):
         legal_moves = []
@@ -81,8 +95,11 @@ class Game:
         )
         gardens = self.board.get_gardens()
         print(gardens)
+        print(
+            f"The move log {self.move_log} and mt of previous moves : {len(self.move_log)}"
+        )
         for i, j in gardens.items():
-            if j == -1:
+            if isinstance(j, int):
                 for piecej in normal_pieces:
                     legal_moves.append(
                         Move(
@@ -92,4 +109,6 @@ class Game:
                             piece=piecej,
                         )
                     )
+            else:
+                print(j.__str__())
         print("legal moves: ", len(legal_moves))

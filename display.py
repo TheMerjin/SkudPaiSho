@@ -113,7 +113,7 @@ def main():
     pygame.display.set_caption("Pai Sho Intersections")
     game = Game()
     board = game.board
-    piece1 = tile.PaiShoTile(tile_type="host_red_three", color=1, position=(9, 9))
+    piece1 = tile.PaiShoTile(tile_type="host_red_three", color=1, position=(None, None))
 
     running = True
     while running:
@@ -126,7 +126,7 @@ def main():
                 game.play_move(
                     Move(
                         start=None,
-                        end=(9, 18),
+                        end=(9, 17),
                         board=board,
                         piece=piece1,
                     )
@@ -149,6 +149,9 @@ def main():
                         accent_pos=tile2.position,
                     )
                 )
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
+                print("monkey")
+                game.undo_move()
 
         pygame.display.flip()
 
