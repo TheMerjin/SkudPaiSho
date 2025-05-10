@@ -6,7 +6,7 @@ import random
 
 tile_type_to_images = {
     "host_boat": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HB.png",
-    "geust_boat": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GB.png",
+    "guest_boat": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GB.png",
     "host_lotus": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HL.png",
     "guest_lotus": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GL.png",
     "host_orchid": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HO.png",

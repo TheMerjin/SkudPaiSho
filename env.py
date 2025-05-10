@@ -11,12 +11,12 @@ class Game:
     def __init__(self):
         self.board = PaiShoBoard()
         self.guest_normal_tiles = (
-            [PaiShoTile("geust_red_three", 1) for _ in range(3)]
-            + [PaiShoTile("geust_red_four", 1) for _ in range(3)]
-            + [PaiShoTile("geust_red_five", 1) for _ in range(3)]
-            + [PaiShoTile("geust_white_three", 1) for _ in range(3)]
-            + [PaiShoTile("geust_white_four", 1) for _ in range(3)]
-            + [PaiShoTile("geust_white_five", 1) for _ in range(3)]
+            [PaiShoTile("guest_red_three", 1) for _ in range(3)]
+            + [PaiShoTile("guest_red_four", 1) for _ in range(3)]
+            + [PaiShoTile("guest_red_five", 1) for _ in range(3)]
+            + [PaiShoTile("guest_white_three", 1) for _ in range(3)]
+            + [PaiShoTile("guest_white_four", 1) for _ in range(3)]
+            + [PaiShoTile("guest_white_five", 1) for _ in range(3)]
         )
 
         # Guest Normal Tiles
@@ -119,4 +119,46 @@ class Game:
                     )
             else:
                 print(j.__str__())
-        print("legal moves: ", len(legal_moves))
+            directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+            for row in self.board.board:
+                for piece in row:
+                    if isinstance(piece, PaiShoTile):
+                        move_distance = piece.move_distance
+                        piece_pos = piece.position
+                        x, y = piece_pos
+                        possible_paths = generate_paths_distance_3(
+                            x, y, self.board.board
+                        )
+                        print("amt possible paths ", len(possible_paths))
+
+
+def generate_paths_distance_3(start_x, start_y, board):
+    board_size = len(board)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # U, D, L, R
+    paths = []
+
+    def dfs(x, y, path, visited, depth):
+        if depth == 3:
+            paths.append(path[:])
+            return
+
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+
+            if (
+                0 <= nx < board_size
+                and 0 <= ny < board_size
+                and (nx, ny) not in visited
+                and not isinstance(board[nx][ny], PaiShoTile)
+                and board[nx][ny] != -1
+            ):
+                visited.add((nx, ny))
+                path.append((nx, ny))
+                dfs(nx, ny, path, visited, depth + 1)
+                path.pop()
+                visited.remove((nx, ny))
+
+    visited = set()
+    visited.add((start_x, start_y))
+    dfs(start_x, start_y, [], visited, 0)
+    return paths

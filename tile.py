@@ -10,11 +10,31 @@ class PaiShoTile:
         : white is 1 black is 0 geust is black host is white
         :param position: A tuple (row, column) representing the tile’s position on the board (default is None).
         """
-
+        self.tile_type_to_move_distance = {
+            "host_boat": 0,
+            "guest_boat": 0,
+            "host_lotus": 0,
+            "guest_lotus": 0,
+            "host_orchid": 0,
+            "guest_orchid": 0,
+            "host_red_three": 3,
+            "host_red_four": 4,
+            "host_red_five": 5,
+            "guest_red_three": 3,
+            "guest_red_four": 4,
+            "guest_red_five": 5,
+            "host_white_three": 3,
+            "host_white_four": 4,
+            "host_white_five": 5,
+            "guest_white_three": 3,
+            "guest_white_four": 4,
+            "guest_white_five": 5,
+        }
         self.tile_type = tile_type
         self.color = color
         self.position = position
         self.identifier = identifier
+        self.move_distance = self.tile_type_to_move_distance[self.tile_type]
 
     def __str__(self):
         return (
