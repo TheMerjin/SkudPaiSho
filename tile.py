@@ -34,11 +34,14 @@ class PaiShoTile:
 
 
 class FlowerTile(PaiShoTile):
-    def __init__(self, flower_type, color, position=None, identifier=None):
+    def __init__(self, tile_type, color, position=None, identifier=None):
         super().__init__(
-            tile_type=flower_type, color=color, position=position, identifier=identifier
+            tile_type=tile_type,
+            color=color,
+            position=position,
+            identifier=identifier,
         )
-        self.flower_type = flower_type  # store flower type explicitly (optional)
+        self.flower_type = tile_type  # store flower type explicitly (optional)
 
 
 class AccentTile(PaiShoTile):

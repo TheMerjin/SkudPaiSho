@@ -126,7 +126,7 @@ def main():
                 game.play_move(
                     Move(
                         start=None,
-                        end=(9, 9),
+                        end=(9, 18),
                         board=board,
                         piece=piece1,
                     )

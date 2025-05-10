@@ -80,6 +80,13 @@ class PaiShoBoard:
         for row in board:
             print(" ".join([str(s) if s == -1 else str(s) + " " for s in row]))
 
+    def get_gardens(self):
+        gardens = [(0, 9), (9, 0), (9, 18), (18, 9)]
+        garden_vals = {}
+        for garden in gardens:
+            garden_vals[garden] = self.board[garden[0]][garden[1]]
+        return garden_vals
+
 
 def plot_board(board):
 

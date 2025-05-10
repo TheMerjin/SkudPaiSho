@@ -50,17 +50,15 @@ class Game:
         )
         self.geust_to_play = True
         self.move_log = []
-        print(self.guest_pieces)
+        self.generate_legal_moves(self.board, self.geust_to_play)
 
     def play_move(self, move):
         if move.is_placement:
             self.board.board[move.end_row][move.end_col] = move.piece_moved
             move.piece_moved.position = (move.end_row, move.end_col)
             self.geust_to_play = not self.geust_to_play
+            self.generate_legal_moves(self.board, self.geust_to_play)
         else:
-            print(move.piece_moved)
-            print(move.start_col, move.start_row)
-            print(f"end_col { move.end_col} and end_row: {move.end_row}")
             self.board.board[move.end_row][move.end_col] = move.piece_moved
             self.board.board[move.start_row][move.start_col] = 0
             if move.harmony:
@@ -69,6 +67,22 @@ class Game:
                 ] = move.accent_tile
             move.piece_moved.position = (move.end_row, move.end_col)
             self.geust_to_play = not self.geust_to_play
+            self.generate_legal_moves(self.board, self.geust_to_play)
 
-    def generate_legal_moves(self, board, host_or_geust):
+    def generate_legal_moves(self, board, guest_to_play):
         legal_moves = []
+        pieces = self.guest_pieces if self.geust_to_play else self.host_pieces
+        gardens = self.board.get_gardens()
+        self.board.print_board()
+        for i, j in gardens:
+            if j == -1:
+                for piecej in pieces:
+                    legal_moves.append(
+                        Move(
+                            start=None,
+                            end=(9, 18),
+                            board=board,
+                            piece=piecej,
+                        )
+                    )
+        print(legal_moves)
