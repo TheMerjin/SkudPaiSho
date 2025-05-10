@@ -45,6 +45,7 @@ class PaiShoBoard:
         self.board = [[0 for _ in range(19)] for _ in range(19)]
         self.fix_board()
         self.copy_of_board = [row[:] for row in self.board]
+        self.gardens = [(0, 9), (9, 0), (9, 18), (18, 9)]
 
     def fix_board(self):
         # We'll consider the center to be (8.5,8.5) in 0-based indexing
@@ -76,7 +77,7 @@ class PaiShoBoard:
                 if row > 9 and col < 9 and (row - col) < 7:
                     self.board[row][col] = 1
 
-    def print_board(self, board):
+    def print_board(self, board: list):
         for row in board:
             print(" ".join([str(s) if s == -1 else str(s) + " " for s in row]))
 

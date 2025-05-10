@@ -10,43 +10,45 @@ class Game:
 
     def __init__(self):
         self.board = PaiShoBoard()
-        guest_normal_tiles = (
-            [PaiShoTile("geust_red_three", 1) for _ in range(4)]
-            + [PaiShoTile("geust_red_four", 1) for _ in range(4)]
-            + [PaiShoTile("geust_red_five", 1) for _ in range(4)]
-            + [PaiShoTile("geust_white_three", 1) for _ in range(4)]
-            + [PaiShoTile("geust_white_four", 1) for _ in range(4)]
-            + [PaiShoTile("geust_white_five", 1) for _ in range(4)]
+        self.guest_normal_tiles = (
+            [PaiShoTile("geust_red_three", 1) for _ in range(3)]
+            + [PaiShoTile("geust_red_four", 1) for _ in range(3)]
+            + [PaiShoTile("geust_red_five", 1) for _ in range(3)]
+            + [PaiShoTile("geust_white_three", 1) for _ in range(3)]
+            + [PaiShoTile("geust_white_four", 1) for _ in range(3)]
+            + [PaiShoTile("geust_white_five", 1) for _ in range(3)]
         )
 
         # Guest Normal Tiles
-        host_normal_tiles = (
-            [PaiShoTile("host_red_three", 1) for _ in range(4)]
-            + [PaiShoTile("host_red_four", 1) for _ in range(4)]
-            + [PaiShoTile("host_red_five", 1) for _ in range(4)]
-            + [PaiShoTile("host_white_three", 1) for _ in range(4)]
-            + [PaiShoTile("host_white_four", 1) for _ in range(4)]
-            + [PaiShoTile("host_white_five", 1) for _ in range(4)]
+        self.host_normal_tiles = (
+            [PaiShoTile("host_red_three", 1) for _ in range(3)]
+            + [PaiShoTile("host_red_four", 1) for _ in range(3)]
+            + [PaiShoTile("host_red_five", 1) for _ in range(3)]
+            + [PaiShoTile("host_white_three", 1) for _ in range(3)]
+            + [PaiShoTile("host_white_four", 1) for _ in range(3)]
+            + [PaiShoTile("host_white_five", 1) for _ in range(3)]
         )
-        host_accent_tiles = [PaiShoTile("host_boat", 1)]
+        self.host_accent_tiles = [PaiShoTile("host_boat", 1)]
 
         # Guest Accent Tiles
-        guest_accent_tiles = [PaiShoTile("guest_boat", 1)]
+        self.guest_accent_tiles = [PaiShoTile("guest_boat", 1)]
 
-        host_special_tiles = [
+        self.host_special_tiles = [
             PaiShoTile("host_lotus", 1),
             PaiShoTile("host_orchid", 1),
         ]
 
         # Guest Special Tiles
-        guest_special_tiles = [
+        self.guest_special_tiles = [
             PaiShoTile("guest_lotus", 1),
             PaiShoTile("guest_orchid", 1),
         ]
 
-        self.host_pieces = host_normal_tiles + host_accent_tiles + host_special_tiles
+        self.host_pieces = (
+            self.host_normal_tiles + self.host_accent_tiles + self.host_special_tiles
+        )
         self.guest_pieces = (
-            guest_normal_tiles + guest_accent_tiles + guest_special_tiles
+            self.guest_normal_tiles + self.guest_accent_tiles + self.guest_special_tiles
         )
         self.geust_to_play = True
         self.move_log = []
@@ -60,7 +62,9 @@ class Game:
             self.generate_legal_moves(self.board, self.geust_to_play)
         else:
             self.board.board[move.end_row][move.end_col] = move.piece_moved
-            self.board.board[move.start_row][move.start_col] = 0
+            self.board.board[move.start_row][move.start_col] = self.board.copy_of_board[
+                move.start_row
+            ][move.start_col]
             if move.harmony:
                 self.board.board[move.accent_pos[1]][
                     move.accent_pos[0]
@@ -72,11 +76,14 @@ class Game:
     def generate_legal_moves(self, board, guest_to_play):
         legal_moves = []
         pieces = self.guest_pieces if self.geust_to_play else self.host_pieces
+        normal_pieces = (
+            self.guest_normal_tiles if self.geust_to_play else self.host_normal_tiles
+        )
         gardens = self.board.get_gardens()
-        self.board.print_board()
-        for i, j in gardens:
+        print(gardens)
+        for i, j in gardens.items():
             if j == -1:
-                for piecej in pieces:
+                for piecej in normal_pieces:
                     legal_moves.append(
                         Move(
                             start=None,
@@ -85,4 +92,4 @@ class Game:
                             piece=piecej,
                         )
                     )
-        print(legal_moves)
+        print("legal moves: ", len(legal_moves))
