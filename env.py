@@ -31,7 +31,8 @@ class Game:
         host_accent_tiles = [PaiShoTile("host_boat", 1)]
 
         # Guest Accent Tiles
-        guest_accent_tiles = [PaiShoTile("boat", 0)]
+        guest_accent_tiles = [PaiShoTile("boat", 1)]
+
         host_special_tiles = [
             PaiShoTile("host_lotus", 1),
             PaiShoTile("host_orchid", 1),
