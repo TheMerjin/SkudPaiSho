@@ -31,7 +31,7 @@ class Game:
         host_accent_tiles = [PaiShoTile("host_boat", 1)]
 
         # Guest Accent Tiles
-        guest_accent_tiles = [PaiShoTile("boat", 1)]
+        guest_accent_tiles = [PaiShoTile("guest_boat", 1)]
 
         host_special_tiles = [
             PaiShoTile("host_lotus", 1),
@@ -43,10 +43,12 @@ class Game:
             PaiShoTile("guest_lotus", 1),
             PaiShoTile("guest_orchid", 1),
         ]
+
         self.host_pieces = host_normal_tiles + host_accent_tiles + host_special_tiles
         self.guest_pieces = (
             guest_normal_tiles + guest_accent_tiles + guest_special_tiles
         )
+        print(self.host_pieces)
         self.geust_to_play = True
         self.move_log = []
 
