@@ -1,2 +1,2 @@
 # SkudPaiSho
-A port of Skud Pai Sho to github :). Hopefully with a pai sho engine to come :)
+A port of Skud Pai Sho to python :). Hopefully with a pai sho engine to come :)
