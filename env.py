@@ -48,9 +48,9 @@ class Game:
         self.guest_pieces = (
             guest_normal_tiles + guest_accent_tiles + guest_special_tiles
         )
-        print(self.host_pieces)
         self.geust_to_play = True
         self.move_log = []
+        print(self.guest_pieces)
 
     def play_move(self, move):
         if move.is_placement:
