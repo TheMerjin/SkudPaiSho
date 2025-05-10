@@ -17,6 +17,8 @@ class Move:
         )  # If there's no start square, it's a placement
         if self.is_placement:
             self.start_pos = None
+            self.start_col = None
+            self.start_row = None
             self.end_pos = end
             self.end_col = self.end_pos[1]
             self.end_row = self.end_pos[0]

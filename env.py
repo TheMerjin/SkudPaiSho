@@ -83,9 +83,17 @@ class Game:
             self.board.board[move.end_row][move.end_col] = self.board.copy_of_board[
                 move.end_row
             ][move.end_col]
-            self.generate_legal_moves(self.board, self.geust_to_play)
+
         else:
-            pass
+            self.board.board[move.end_row][move.end_col] = self.board.copy_of_board[
+                move.start_row
+            ][move.start_col]
+            self.board.board[move.start_row][move.start_col] = move.piece_moved
+            if move.harmony:
+                self.board.board[move.accent_pos[0]][move.accent_pos[1]] = (
+                    self.board.copy_of_board[move.accent_pos[0]][move.accent_pos[1]]
+                )
+            move.piece_moved.position = (move.start_row, move.start_col)
 
     def generate_legal_moves(self, board, guest_to_play):
         legal_moves = []
