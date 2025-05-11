@@ -50,17 +50,17 @@ class Game:
         self.guest_pieces = (
             self.guest_normal_tiles + self.guest_accent_tiles + self.guest_special_tiles
         )
-        self.geust_to_play = True
+        self.guest_to_play = True
         self.move_log = []
-        self.generate_legal_moves(self.board, self.geust_to_play)
+        self.generate_legal_moves(self.board, self.guest_to_play)
 
     def play_move(self, move):
         self.move_log.append(move)
         if move.is_placement:
             self.board.board[move.end_row][move.end_col] = move.piece_moved
             move.piece_moved.position = (move.end_row, move.end_col)
-            self.geust_to_play = not self.geust_to_play
-            self.generate_legal_moves(self.board, self.geust_to_play)
+            self.guest_to_play = not self.guest_to_play
+            self.generate_legal_moves(self.board, self.guest_to_play)
         else:
             self.board.board[move.end_row][move.end_col] = move.piece_moved
             self.board.board[move.start_row][move.start_col] = self.board.copy_of_board[
@@ -71,8 +71,8 @@ class Game:
                     move.accent_pos[1]
                 ] = move.accent_tile
             move.piece_moved.position = (move.end_row, move.end_col)
-            self.geust_to_play = not self.geust_to_play
-            self.generate_legal_moves(self.board, self.geust_to_play)
+            self.guest_to_play = not self.guest_to_play
+            self.generate_legal_moves(self.board, self.guest_to_play)
 
     def undo_move(self):
         move = self.move_log.pop()
@@ -97,9 +97,9 @@ class Game:
 
     def generate_legal_moves(self, board, guest_to_play):
         legal_moves = []
-        pieces = self.guest_pieces if self.geust_to_play else self.host_pieces
+        pieces = self.guest_pieces if guest_to_play else self.host_pieces
         normal_pieces = (
-            self.guest_normal_tiles if self.geust_to_play else self.host_normal_tiles
+            self.guest_normal_tiles if guest_to_play else self.host_normal_tiles
         )
         gardens = self.board.get_gardens()
         print(gardens)
@@ -123,19 +123,20 @@ class Game:
             for row in self.board.board:
                 for piece in row:
                     if isinstance(piece, FlowerTile):
-                        move_distance = piece.move_distance
-                        piece_pos = piece.position
-                        x, y = piece_pos
-                        paths = []
-                        for i in range(1, move_distance + 1):
-                            paths.extend(
-                                generate_all_cardinal_paths(
-                                    x, y, self.board.board, max_steps=i
+                        if piece.is_guest == guest_to_play:
+                            move_distance = piece.move_distance
+                            piece_pos = piece.position
+                            x, y = piece_pos
+                            paths = []
+                            for i in range(1, move_distance + 1):
+                                paths.extend(
+                                    generate_all_cardinal_paths(
+                                        x, y, self.board.board, max_steps=i
+                                    )
                                 )
-                            )
-                        print(f"all paths {len(paths)}")
-                        unique_paths = self.get_unique_paths(paths)
-                        print("unique paths:", len(unique_paths))
+                            print(f"all paths {len(paths)}")
+                            unique_paths = self.get_unique_paths(paths)
+                            print("unique paths:", len(unique_paths))
 
     def get_unique_paths(self, paths):
         seen_end_pts = []

@@ -31,6 +31,10 @@ class PaiShoTile:
             "guest_white_five": 5,
         }
         self.tile_type = tile_type
+        if "guest" in self.tile_type:
+            self.is_guest = 1
+        else:
+            self.is_guest = 0
         self.color = color
         self.position = position
 
