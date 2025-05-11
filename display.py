@@ -115,7 +115,9 @@ def main():
     board = game.board
     piece1 = tile.FlowerTile(tile_type="host_red_three", color=0, position=(None, None))
     piece2 = tile.FlowerTile(tile_type="host_red_five", color=0, position=(None, None))
-
+    move_index = -1
+    legal_moves = []
+    showing_moves = False
     running = True
     while running:
         draw_board(win, board)
@@ -161,6 +163,25 @@ def main():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
                 print("monkey")
                 game.undo_move()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                if not showing_moves:
+                    legal_moves = game.generate_legal_moves(
+                        game.board, game.guest_to_play
+                    )
+                    move_index = -1
+                    showing_moves = True
+                else:
+                    if move_index >= 0:
+                        game.undo_move()
+                    move_index += 1
+                    if move_index < len(legal_moves):
+                        move = legal_moves[move_index]
+                        game.play_move(move)
+                        print("Showing move:", move)
+                    else:
+                        print("Finished showing all legal moves.")
+                        showing_moves = False
+                        move_index = -1
 
         pygame.display.flip()
 

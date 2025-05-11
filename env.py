@@ -94,7 +94,6 @@ class Game:
             self.board.board[move.end_row][move.end_col] = move.piece_moved
             move.piece_moved.position = (move.end_row, move.end_col)
             self.guest_to_play = not self.guest_to_play
-            self.generate_legal_moves(self.board, self.guest_to_play)
         else:
             self.board.board[move.end_row][move.end_col] = move.piece_moved
             self.board.board[move.start_row][move.start_col] = self.board.copy_of_board[
@@ -106,7 +105,6 @@ class Game:
                 ] = move.accent_tile
             move.piece_moved.position = (move.end_row, move.end_col)
             self.guest_to_play = not self.guest_to_play
-            self.generate_legal_moves(self.board, self.guest_to_play)
 
     def undo_move(self):
         move = self.move_log.pop()
@@ -136,7 +134,6 @@ class Game:
             self.guest_normal_tiles if guest_to_play else self.host_normal_tiles
         )
         gardens = self.board.get_gardens()
-        print(gardens)
         print(
             f"The move log {self.move_log} and mt of previous moves : {len(self.move_log)}"
         )
@@ -154,25 +151,40 @@ class Game:
             else:
                 print(j.__str__())
         directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+        opposite_colors = {0: None, 1: 2, 2: 1}
         for row in self.board.board:
-            for piece in row:
-                if isinstance(piece, FlowerTile):
-                    if piece.is_guest == guest_to_play:
-                        move_distance = piece.move_distance
-                        piece_pos = piece.position
+            for current_piece in row:
+                if isinstance(current_piece, FlowerTile):
+                    if current_piece.is_guest == guest_to_play:
+                        move_distance = current_piece.move_distance
+                        color = current_piece.color
+                        opposite_color = opposite_color[color]
+                        piece_pos = current_piece.position
                         x, y = piece_pos
                         paths = []
                         for i in range(1, move_distance + 1):
                             paths.extend(
                                 generate_all_cardinal_paths(
-                                    x, y, self.board.board, max_steps=i
+                                    x,
+                                    y,
+                                    self.board.board,
+                                    max_steps=i,
+                                    opposite_color=opposite_color,
                                 )
                             )
-        unique_paths = self.get_unique_paths(paths)
-        for path in unique_paths:
-            legal_moves.append(Move(
-                start = 
-            ))
+                        unique_paths = self.get_unique_paths(paths)
+                        legal_moves.extend(
+                            [
+                                Move(
+                                    start=piece_pos,
+                                    end=i[-1],
+                                    board=self.board,
+                                    piece=current_piece,
+                                )
+                                for i in unique_paths
+                            ]
+                        )
+        return legal_moves
 
     def get_unique_paths(self, paths):
         seen_end_pts = []
@@ -184,7 +196,9 @@ class Game:
         return unique_paths
 
 
-def generate_all_cardinal_paths(start_x, start_y, board, max_steps=3):
+def generate_all_cardinal_paths(
+    start_x, start_y, board, max_steps=3, opposite_color=None
+):
     board_size = len(board)
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # U, D, L, R
     all_paths = []
@@ -202,6 +216,7 @@ def generate_all_cardinal_paths(start_x, start_y, board, max_steps=3):
                 and board[nx][ny] != -1
                 and (nx, ny) not in path
                 and not isinstance(board[nx][ny], PaiShoTile)
+                and board[nx][ny] != opposite_color
             ):
                 path.append((nx, ny))
                 dfs(nx, ny, path, depth + 1)

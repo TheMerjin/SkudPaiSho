@@ -35,7 +35,12 @@ class PaiShoTile:
             self.is_guest = 1
         else:
             self.is_guest = 0
-        self.color = color
+        if "white" in self.tile_type:
+            self.color = 2
+        elif "red" in self.tile_type:
+            self.color = 1
+        else:
+            self.color = 0
         self.position = position
 
         self.move_distance = self.tile_type_to_move_distance[self.tile_type]
