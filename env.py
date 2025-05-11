@@ -168,7 +168,11 @@ class Game:
                                     x, y, self.board.board, max_steps=i
                                 )
                             )
-                        unique_paths = self.get_unique_paths(paths)
+        unique_paths = self.get_unique_paths(paths)
+        for path in unique_paths:
+            legal_moves.append(Move(
+                start = 
+            ))
 
     def get_unique_paths(self, paths):
         seen_end_pts = []
