@@ -153,24 +153,22 @@ class Game:
                     )
             else:
                 print(j.__str__())
-            directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-            for row in self.board.board:
-                for piece in row:
-                    if isinstance(piece, FlowerTile):
-                        if piece.is_guest == guest_to_play:
-                            move_distance = piece.move_distance
-                            piece_pos = piece.position
-                            x, y = piece_pos
-                            paths = []
-                            for i in range(1, move_distance + 1):
-                                paths.extend(
-                                    generate_all_cardinal_paths(
-                                        x, y, self.board.board, max_steps=i
-                                    )
+        directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+        for row in self.board.board:
+            for piece in row:
+                if isinstance(piece, FlowerTile):
+                    if piece.is_guest == guest_to_play:
+                        move_distance = piece.move_distance
+                        piece_pos = piece.position
+                        x, y = piece_pos
+                        paths = []
+                        for i in range(1, move_distance + 1):
+                            paths.extend(
+                                generate_all_cardinal_paths(
+                                    x, y, self.board.board, max_steps=i
                                 )
-                            print(f"all paths {len(paths)}")
-                            unique_paths = self.get_unique_paths(paths)
-                            print("unique paths:", len(unique_paths))
+                            )
+                        unique_paths = self.get_unique_paths(paths)
 
     def get_unique_paths(self, paths):
         seen_end_pts = []
