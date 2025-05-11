@@ -2,7 +2,7 @@
 
 from board import PaiShoBoard
 from move import Move
-from tile import PaiShoTile
+from tile import PaiShoTile, FlowerTile
 
 
 class Game:
@@ -11,9 +11,9 @@ class Game:
     def __init__(self):
         self.board = PaiShoBoard()
         self.guest_normal_tiles = (
-            [PaiShoTile("guest_red_three", 1) for _ in range(3)]
-            + [PaiShoTile("guest_red_four", 1) for _ in range(3)]
-            + [PaiShoTile("guest_red_five", 1) for _ in range(3)]
+            [PaiShoTile("guest_red_three", 0) for _ in range(3)]
+            + [PaiShoTile("guest_red_four", 0) for _ in range(3)]
+            + [PaiShoTile("guest_red_five", 0) for _ in range(3)]
             + [PaiShoTile("guest_white_three", 1) for _ in range(3)]
             + [PaiShoTile("guest_white_four", 1) for _ in range(3)]
             + [PaiShoTile("guest_white_five", 1) for _ in range(3)]
@@ -21,27 +21,27 @@ class Game:
 
         # Guest Normal Tiles
         self.host_normal_tiles = (
-            [PaiShoTile("host_red_three", 1) for _ in range(3)]
-            + [PaiShoTile("host_red_four", 1) for _ in range(3)]
-            + [PaiShoTile("host_red_five", 1) for _ in range(3)]
+            [PaiShoTile("host_red_three", 0) for _ in range(3)]
+            + [PaiShoTile("host_red_four", 0) for _ in range(3)]
+            + [PaiShoTile("host_red_five", 0) for _ in range(3)]
             + [PaiShoTile("host_white_three", 1) for _ in range(3)]
             + [PaiShoTile("host_white_four", 1) for _ in range(3)]
             + [PaiShoTile("host_white_five", 1) for _ in range(3)]
         )
-        self.host_accent_tiles = [PaiShoTile("host_boat", 1)]
+        self.host_accent_tiles = [PaiShoTile("host_boat", None)]
 
         # Guest Accent Tiles
-        self.guest_accent_tiles = [PaiShoTile("guest_boat", 1)]
+        self.guest_accent_tiles = [PaiShoTile("guest_boat", None)]
 
         self.host_special_tiles = [
-            PaiShoTile("host_lotus", 1),
-            PaiShoTile("host_orchid", 1),
+            PaiShoTile("host_lotus", None),
+            PaiShoTile("host_orchid", None),
         ]
 
         # Guest Special Tiles
         self.guest_special_tiles = [
-            PaiShoTile("guest_lotus", 1),
-            PaiShoTile("guest_orchid", 1),
+            PaiShoTile("guest_lotus", None),
+            PaiShoTile("guest_orchid", None),
         ]
 
         self.host_pieces = (
@@ -112,7 +112,7 @@ class Game:
                     legal_moves.append(
                         Move(
                             start=None,
-                            end=(9, 18),
+                            end=i,
                             board=board,
                             piece=piecej,
                         )
@@ -122,43 +122,53 @@ class Game:
             directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
             for row in self.board.board:
                 for piece in row:
-                    if isinstance(piece, PaiShoTile):
+                    if isinstance(piece, FlowerTile):
                         move_distance = piece.move_distance
                         piece_pos = piece.position
                         x, y = piece_pos
-                        possible_paths = generate_paths_distance_3(
-                            x, y, self.board.board
-                        )
-                        print("amt possible paths ", len(possible_paths))
+                        paths = []
+                        for i in range(1, move_distance + 1):
+                            paths.extend(
+                                generate_all_cardinal_paths(
+                                    x, y, self.board.board, max_steps=i
+                                )
+                            )
+                        print(f"all paths {len(paths)}")
+                        unique_paths = self.get_unique_paths(paths)
+                        print("unique paths:", len(unique_paths))
+
+    def get_unique_paths(self, paths):
+        seen_end_pts = []
+        unique_paths = []
+        for path in paths:
+            if path[-1] not in seen_end_pts:
+                seen_end_pts.append(path[-1])
+                unique_paths.append(path)
+        return unique_paths
 
 
-def generate_paths_distance_3(start_x, start_y, board):
+def generate_all_cardinal_paths(start_x, start_y, board, max_steps=3):
     board_size = len(board)
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # U, D, L, R
-    paths = []
+    all_paths = []
 
-    def dfs(x, y, path, visited, depth):
-        if depth == 3:
-            paths.append(path[:])
+    def dfs(x, y, path, depth):
+        if depth == max_steps:
+            all_paths.append(path[:])
             return
 
         for dx, dy in directions:
             nx, ny = x + dx, y + dy
-
             if (
                 0 <= nx < board_size
                 and 0 <= ny < board_size
-                and (nx, ny) not in visited
-                and not isinstance(board[nx][ny], PaiShoTile)
                 and board[nx][ny] != -1
+                and (nx, ny) not in path
+                and not isinstance(board[nx][ny], PaiShoTile)
             ):
-                visited.add((nx, ny))
                 path.append((nx, ny))
-                dfs(nx, ny, path, visited, depth + 1)
+                dfs(nx, ny, path, depth + 1)
                 path.pop()
-                visited.remove((nx, ny))
 
-    visited = set()
-    visited.add((start_x, start_y))
-    dfs(start_x, start_y, [], visited, 0)
-    return paths
+    dfs(start_x, start_y, [], 0)
+    return all_paths

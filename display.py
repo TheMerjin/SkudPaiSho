@@ -113,7 +113,7 @@ def main():
     pygame.display.set_caption("Pai Sho Intersections")
     game = Game()
     board = game.board
-    piece1 = tile.PaiShoTile(tile_type="host_red_three", color=1, position=(None, None))
+    piece1 = tile.FlowerTile(tile_type="host_red_three", color=1, position=(None, None))
 
     running = True
     while running:
@@ -126,7 +126,7 @@ def main():
                 game.play_move(
                     Move(
                         start=None,
-                        end=(9, 17),
+                        end=(9, 9),
                         board=board,
                         piece=piece1,
                     )

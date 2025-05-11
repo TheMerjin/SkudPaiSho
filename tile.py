@@ -7,7 +7,7 @@ class PaiShoTile:
         Initialize a Pai Sho tile.
 
         :param tile_type: The type of tile (e.g., "flower", "water", "bamboo").
-        : white is 1 black is 0 geust is black host is white
+        : white is 1 red is 0
         :param position: A tuple (row, column) representing the tile’s position on the board (default is None).
         """
         self.tile_type_to_move_distance = {
@@ -33,7 +33,7 @@ class PaiShoTile:
         self.tile_type = tile_type
         self.color = color
         self.position = position
-        self.identifier = identifier
+
         self.move_distance = self.tile_type_to_move_distance[self.tile_type]
 
     def __str__(self):
@@ -61,7 +61,10 @@ class FlowerTile(PaiShoTile):
             position=position,
             identifier=identifier,
         )
-        self.flower_type = tile_type  # store flower type explicitly (optional)
+        self.tile_type = tile_type
+        self.identifier = (
+            color * 10 + self.move_distance
+        )  # store flower type explicitly (optional)
 
 
 class AccentTile(PaiShoTile):
