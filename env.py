@@ -158,7 +158,7 @@ class Game:
                     if current_piece.is_guest == guest_to_play:
                         move_distance = current_piece.move_distance
                         color = current_piece.color
-                        opposite_color = opposite_color[color]
+                        opposite_color = opposite_colors[color]
                         piece_pos = current_piece.position
                         x, y = piece_pos
                         paths = []
