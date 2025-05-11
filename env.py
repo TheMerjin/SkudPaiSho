@@ -53,6 +53,40 @@ class Game:
         self.guest_to_play = True
         self.move_log = []
         self.generate_legal_moves(self.board, self.guest_to_play)
+        self.base_harmony_map = {
+            "red_three": ["red_four", "white_five"],
+            "red_four": ["red_three", "red_five"],
+            "red_five": ["red_four", "white_three", "white_four"],
+            "white_three": ["red_five", "white_four"],
+            "white_four": ["white_three", "white_five"],
+            "white_five": ["white_four", "red_three"],
+        }
+        self.harmony_map = {}
+
+        for base_color, harmonies in self.base_harmony_map.items():
+            for prefix in ["host_", "guest_"]:
+                key = prefix + base_color
+                self.harmony_map[key] = [prefix + h for h in harmonies]
+
+        self.base_disharmony_map = {
+            "red_three": ["white_three"],
+            "red_four": ["white_four"],
+            "red_five": ["white_five"],
+            "white_three": ["red_three"],
+            "white_four": ["red_four"],
+            "white_five": ["red_five"],
+        }
+
+        disharmony_map = {}
+
+        for base_color, disharmonies in self.base_disharmony_map.items():
+            for prefix in ["host_", "guest_"]:
+                key = prefix + base_color
+                disharmony_map[key] = [
+                    ("host_" if prefix == "guest_" else "guest_") + d
+                    for d in disharmonies
+                ]
+        print(self.harmony_map)
 
     def play_move(self, move):
         self.move_log.append(move)
