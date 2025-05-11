@@ -76,7 +76,7 @@ class Game:
 
     def undo_move(self):
         move = self.move_log.pop()
-        self.geust_to_play = not self.geust_to_play
+        self.geust_to_play = not self.guest_to_play
 
         if move.is_placement:
             move.piece_moved.position = (None, None)
