@@ -77,9 +77,9 @@ class FlowerTile(PaiShoTile):
 
 
 class AccentTile(PaiShoTile):
-    def __init__(self, color, position=None, identifier=None):
+    def __init__(self, tile_type, color, position=None, identifier=None):
         super().__init__(
-            tile_type="flower", color=color, position=position, identifier=identifier
+            tile_type=tile_type, color=color, position=position, identifier=identifier
         )
 
 

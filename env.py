@@ -2,7 +2,7 @@
 
 from board import PaiShoBoard
 from move import Move
-from tile import PaiShoTile, FlowerTile
+from tile import PaiShoTile, FlowerTile, AccentTile, SpecialTile
 
 
 class Game:
@@ -11,27 +11,27 @@ class Game:
     def __init__(self):
         self.board = PaiShoBoard()
         self.guest_normal_tiles = (
-            [PaiShoTile("guest_red_three", 0) for _ in range(3)]
-            + [PaiShoTile("guest_red_four", 0) for _ in range(3)]
-            + [PaiShoTile("guest_red_five", 0) for _ in range(3)]
-            + [PaiShoTile("guest_white_three", 1) for _ in range(3)]
-            + [PaiShoTile("guest_white_four", 1) for _ in range(3)]
-            + [PaiShoTile("guest_white_five", 1) for _ in range(3)]
+            [FlowerTile("guest_red_three", 0) for _ in range(3)]
+            + [FlowerTile("guest_red_four", 0) for _ in range(3)]
+            + [FlowerTile("guest_red_five", 0) for _ in range(3)]
+            + [FlowerTile("guest_white_three", 1) for _ in range(3)]
+            + [FlowerTile("guest_white_four", 1) for _ in range(3)]
+            + [FlowerTile("guest_white_five", 1) for _ in range(3)]
         )
 
         # Guest Normal Tiles
         self.host_normal_tiles = (
-            [PaiShoTile("host_red_three", 0) for _ in range(3)]
-            + [PaiShoTile("host_red_four", 0) for _ in range(3)]
-            + [PaiShoTile("host_red_five", 0) for _ in range(3)]
-            + [PaiShoTile("host_white_three", 1) for _ in range(3)]
-            + [PaiShoTile("host_white_four", 1) for _ in range(3)]
-            + [PaiShoTile("host_white_five", 1) for _ in range(3)]
+            [FlowerTile("host_red_three", 0) for _ in range(3)]
+            + [FlowerTile("host_red_four", 0) for _ in range(3)]
+            + [FlowerTile("host_red_five", 0) for _ in range(3)]
+            + [FlowerTile("host_white_three", 1) for _ in range(3)]
+            + [FlowerTile("host_white_four", 1) for _ in range(3)]
+            + [FlowerTile("host_white_five", 1) for _ in range(3)]
         )
-        self.host_accent_tiles = [PaiShoTile("host_boat", None)]
+        self.host_accent_tiles = [AccentTile("host_boat", None)]
 
         # Guest Accent Tiles
-        self.guest_accent_tiles = [PaiShoTile("guest_boat", None)]
+        self.guest_accent_tiles = [AccentTile("guest_boat", None)]
 
         self.host_special_tiles = [
             PaiShoTile("host_lotus", None),
@@ -147,8 +147,7 @@ class Game:
                             piece=piecej,
                         )
                     )
-            else:
-                print(j.__str__())
+
         directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
         opposite_colors = {0: None, 1: 2, 2: 1}
         for row in self.board.board:
@@ -162,7 +161,6 @@ class Game:
                         opposite_tile_type = self.disharmony_map[
                             current_piece.tile_type
                         ]
-                        print(opposite_tile_type)
                         x, y = piece_pos
                         paths = []
                         for i in range(1, move_distance + 1):

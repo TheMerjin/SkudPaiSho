@@ -146,22 +146,8 @@ def main():
                 )
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
-                tile2 = tile.PaiShoTile(
-                    tile_type="host_boat",
-                    color=1,
-                    position=(random.randint(0, 18), random.randint(0, 18)),
-                )
-                game.play_move(
-                    Move(
-                        start=piece1.position,
-                        end=(random.randint(0, 18), random.randint(0, 18)),
-                        board=board,
-                        piece=piece1,
-                        harmony=True,
-                        accent_or_special_tile=tile2,
-                        accent_pos=tile2.position,
-                    )
-                )
+                legal_moves = game.generate_legal_moves(game.board, game.guest_to_play)
+                game.play_move(random.choice(legal_moves))
             if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
                 print("monkey")
                 game.undo_move()
