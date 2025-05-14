@@ -77,16 +77,15 @@ class Game:
             "white_five": ["red_five"],
         }
 
-        disharmony_map = {}
+        self.disharmony_map = {}
 
         for base_color, disharmonies in self.base_disharmony_map.items():
             for prefix in ["host_", "guest_"]:
                 key = prefix + base_color
-                disharmony_map[key] = [
+                self.disharmony_map[key] = [
                     ("host_" if prefix == "guest_" else "guest_") + d
                     for d in disharmonies
                 ]
-        print(self.harmony_map)
 
     def play_move(self, move):
         self.move_log.append(move)
@@ -160,6 +159,10 @@ class Game:
                         color = current_piece.color
                         opposite_color = opposite_colors[color]
                         piece_pos = current_piece.position
+                        opposite_tile_type = self.disharmony_map[
+                            current_piece.tile_type
+                        ]
+                        print(opposite_tile_type)
                         x, y = piece_pos
                         paths = []
                         for i in range(1, move_distance + 1):
@@ -170,6 +173,7 @@ class Game:
                                     self.board.board,
                                     max_steps=i,
                                     opposite_color=opposite_color,
+                                    opposite_tile_type=opposite_tile_type,
                                 )
                             )
                         unique_paths = self.get_unique_paths(paths)
@@ -197,7 +201,7 @@ class Game:
 
 
 def generate_all_cardinal_paths(
-    start_x, start_y, board, max_steps=3, opposite_color=None
+    start_x, start_y, board, max_steps=3, opposite_color=None, opposite_tile_type=None
 ):
     board_size = len(board)
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # U, D, L, R
@@ -205,7 +209,23 @@ def generate_all_cardinal_paths(
 
     def dfs(x, y, path, depth):
         if depth == max_steps:
+            final_pos = path[-1]
+            row, col = final_pos
+            for piece in board[row]:
+                if (
+                    isinstance(piece, FlowerTile)
+                    and piece.tile_type in opposite_tile_type
+                ):
+                    return
+
+            for row in board:
+                piece = row[col]
+                if isinstance(piece, FlowerTile):
+                    if piece.tile_type in opposite_tile_type:
+                        return
+
             all_paths.append(path[:])
+
             return
 
         for dx, dy in directions:

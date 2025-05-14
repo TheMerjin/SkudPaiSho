@@ -114,7 +114,9 @@ def main():
     game = Game()
     board = game.board
     piece1 = tile.FlowerTile(tile_type="host_red_three", color=0, position=(None, None))
-    piece2 = tile.FlowerTile(tile_type="host_red_five", color=0, position=(None, None))
+    piece2 = tile.FlowerTile(
+        tile_type="guest_white_three", color=0, position=(None, None)
+    )
     move_index = -1
     legal_moves = []
     showing_moves = False
@@ -129,7 +131,7 @@ def main():
                 game.play_move(
                     Move(
                         start=None,
-                        end=(9, 9),
+                        end=(7, 12),
                         board=board,
                         piece=piece1,
                     )
@@ -137,7 +139,7 @@ def main():
                 game.play_move(
                     Move(
                         start=None,
-                        end=(11, 11),
+                        end=(8, 4),
                         board=board,
                         piece=piece2,
                     )
