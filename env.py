@@ -28,10 +28,16 @@ class Game:
             + [FlowerTile("host_white_four", 1) for _ in range(3)]
             + [FlowerTile("host_white_five", 1) for _ in range(3)]
         )
-        self.host_accent_tiles = [AccentTile("host_boat", None)]
+        self.host_accent_tiles = [
+            AccentTile("host_boat", None),
+            AccentTile("host_knotweed", None),
+        ]
 
         # Guest Accent Tiles
-        self.guest_accent_tiles = [AccentTile("guest_boat", None)]
+        self.guest_accent_tiles = [
+            AccentTile("guest_boat", None),
+            AccentTile("guest_knotweed", None),
+        ]
 
         self.host_special_tiles = [
             PaiShoTile("host_lotus", None),
@@ -87,6 +93,42 @@ class Game:
                     for d in disharmonies
                 ]
 
+    def wheel_effect(self, move):
+        r, c = move.accent_pos[0], move.accent_pos[1]
+        max_r, max_c = len(self.board.board), len(self.board.board[0])
+
+        # 8 neighbors in clockwise order: N, NE, E, SE, S, SW, W, NW
+        offsets = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
+        coords = []
+        for dr, dc in offsets:
+            nr, nc = r + dr, c + dc
+            coords.append((nr, nc))
+        tiles_on_coords = [self.board.board[i][j] for i, j in coords]
+        original_tiles_on_coords = tiles_on_coords[:]
+        tiles_on_coords.insert(0, tiles_on_coords.pop())
+
+        for (
+            idx,
+            coord,
+        ) in enumerate(coords):
+            i, j = coord
+            if isinstance(original_tiles_on_coords[idx], PaiShoTile):
+                if "rock" not in original_tiles_on_coords[idx].tile_type:
+                    self.board.board[i][j] = self.board.copy_of_board[i][j]
+            if isinstance(tiles_on_coords[idx], PaiShoTile):
+
+                self.board.board[i][j] = tiles_on_coords[idx]
+        # finally, place the Wheel accent token itself
+        self.board.board[r][c] = move.accent_tile
+        move.accent_tile.position = (r, c)
+
+    def knotweed_effect(self, move):
+        pass
+
+    def handle_accent_effect(self, move):
+        if "wheel" in move.accent_tile.tile_type:
+            self.wheel_effect(move)
+
     def play_move(self, move):
         self.move_log.append(move)
         if move.is_placement:
@@ -94,20 +136,20 @@ class Game:
             move.piece_moved.position = (move.end_row, move.end_col)
             self.guest_to_play = not self.guest_to_play
         else:
-            self.board.board[move.end_row][move.end_col] = move.piece_moved
             self.board.board[move.start_row][move.start_col] = self.board.copy_of_board[
                 move.start_row
             ][move.start_col]
+            self.board.board[move.end_row][move.end_col] = move.piece_moved
             if move.harmony:
-                self.board.board[move.accent_pos[0]][
-                    move.accent_pos[1]
-                ] = move.accent_tile
+                self.handle_accent_effect(move)
+                print("activated accent tile handling")
+
             move.piece_moved.position = (move.end_row, move.end_col)
             self.guest_to_play = not self.guest_to_play
 
     def undo_move(self):
         move = self.move_log.pop()
-        self.geust_to_play = not self.guest_to_play
+        self.guest_to_play = not self.guest_to_play
 
         if move.is_placement:
             move.piece_moved.position = (None, None)
@@ -195,6 +237,7 @@ class Game:
             if path[-1] not in seen_end_pts:
                 seen_end_pts.append(path[-1])
                 unique_paths.append(path)
+
         return unique_paths
 
 
@@ -213,6 +256,8 @@ def generate_all_cardinal_paths(
                 if (
                     isinstance(piece, FlowerTile)
                     and piece.tile_type in opposite_tile_type
+                    or isinstance(piece, FlowerTile)
+                    and "rock" in piece.tile_type
                 ):
                     return
 

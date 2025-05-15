@@ -3,27 +3,7 @@ import tile
 from env import Game
 from move import Move
 import random
-
-tile_type_to_images = {
-    "host_boat": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HB.png",
-    "guest_boat": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GB.png",
-    "host_lotus": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HL.png",
-    "guest_lotus": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GL.png",
-    "host_orchid": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HO.png",
-    "guest_orchid": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GO.png",
-    "host_red_three": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HR3.png",
-    "host_red_four": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HR4.png",
-    "host_red_five": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HR5.png",
-    "guest_red_three": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GR3.png",
-    "guest_red_four": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GR4.png",
-    "guest_red_five": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GR5.png",
-    "host_white_three": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HW3.png",
-    "host_white_four": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HW4.png",
-    "host_white_five": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\HW5.png",
-    "guest_white_three": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GW3.png",
-    "guest_white_four": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GW4.png",
-    "guest_white_five": r"C:\Users\Sreek\OneDrive\Desktop\Coding\Pai-sho\images\tggproject\GW5.png",
-}
+from board import tile_type_to_images
 
 
 # Constants
@@ -113,10 +93,8 @@ def main():
     pygame.display.set_caption("Pai Sho Intersections")
     game = Game()
     board = game.board
-    piece1 = tile.FlowerTile(tile_type="host_red_three", color=0, position=(None, None))
-    piece2 = tile.FlowerTile(
-        tile_type="guest_white_three", color=0, position=(None, None)
-    )
+    piece1 = tile.AccentTile(tile_type="guest_wheel", color=0, position=(None, None))
+    piece2 = tile.FlowerTile(tile_type="host_red_three", color=0, position=(None, None))
     move_index = -1
     legal_moves = []
     showing_moves = False
@@ -151,6 +129,24 @@ def main():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
                 print("monkey")
                 game.undo_move()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+                piece3 = tile.AccentTile(
+                    tile_type="guest_wheel", color=0, position=(None, None)
+                )
+                x = 5
+                y = 8
+                game.play_move(
+                    Move(
+                        start=(8, 4),
+                        end=(8, 4),
+                        board=board,
+                        piece=piece1,
+                        harmony=True,
+                        accent_or_special_tile=piece3,
+                        accent_pos=(y, x),
+                    )
+                )
+
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
                 if not showing_moves:
                     legal_moves = game.generate_legal_moves(

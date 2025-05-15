@@ -11,6 +11,12 @@ class PaiShoTile:
         :param position: A tuple (row, column) representing the tile’s position on the board (default is None).
         """
         self.tile_type_to_move_distance = {
+            "host_wheel": 0,
+            "guest_wheel": 0,
+            "guest_rock": 0,
+            "host_rock": 0,
+            "guest_knotweed": 0,
+            "host_knotweed": 0,
             "host_boat": 0,
             "guest_boat": 0,
             "host_lotus": 0,
